@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Churn Prediction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        /* Top navigation bar */
+        .navbar {
+            background-color: #1a237e;
+            padding: 16px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .navbar h1 {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar span {
+            color: #90caf9;
+            font-size: 14px;
+        }
+
+        /* Page header */
+        .page-header {
+            background: linear-gradient(135deg, #1a237e, #1565c0);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .page-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 15px;
+            color: #bbdefb;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 960px;
+            margin: 30px auto;
+            padding: 0 20px 40px;
+        }
+
+        /* Section cards */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            border-top: 4px solid #1a237e;
+        }
+
+        .card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e8eaf6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Two column grid */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: #999;
+            font-weight: 400;
+            text-transform: none;
+            margin-top: 2px;
+        }
+
+        input {
+            padding: 10px 14px;
+            border: 1px solid #dde1f0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #1a237e;
+            box-shadow: 0 0 0 3px rgba(26,35,126,0.1);
+        }
+
+        /* Submit button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #283593;
+        }
+
+        /* Result box */
+        .result-churn {
+            background-color: #ffebee;
+            border-left: 5px solid #c62828;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #c62828;
+        }
+
+        .result-stay {
+            background-color: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+
+        .result-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>ChurnIQ</h1>
+        <span>Powered by Random Forest · 98.3% Accuracy</span>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+        <h2>Customer Churn Prediction</h2>
+        <p>Enter customer details below to predict whether they are likely to churn or stay.</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Result box -->
+        {% if prediction %}
+        <div class="{{ 'result-churn' if 'CHURN' in prediction else 'result-stay' }}">
+            <span class="result-icon">{{ '⚠️' if 'CHURN' in prediction else '✅' }}</span>
+            {{ prediction }}
+        </div>
+        {% endif %}
+
+        <form action="/predict" method="POST">
+
+            <!-- Section 1: Account Info -->
+            <div class="card">
+                <h3>Account Information</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Tenure <span class="hint">(months with company)</span></label>
+                        <input type="number" name="tenure" placeholder="e.g. 12" required>
+                    </div>
+                    <div class="form-group">
+                        <label>City Tier <span class="hint">(1, 2 or 3)</span></label>
+                        <input type="number" name="city_tier" placeholder="e.g. 1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender <span class="hint">(0=Female, 1=Male)</span></label>
+                        <input type="number" name="gender" placeholder="0 or 1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Marital Status <span class="hint">(0=Divorced, 1=Married, 2=Single)</span></label>
+                        <input type="number" name="marital_status" placeholder="0, 1 or 2" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Addresses</label>
+                        <input type="number" name="number_of_address" placeholder="e.g. 3" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Devices Registered</label>
+                        <input type="number" name="number_of_device_registered" placeholder="e.g. 4" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: App Behaviour -->
+            <div class="card">
+                <h3>App Behaviour</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Preferred Login Device <span class="hint">(0=Mobile Phone, 1=Phone, 2=Computer)</span></label>
+                        <input type="number" name="preferred_login_device" placeholder="0, 1 or 2" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hours Spent on App</label>
+                        <input type="number" name="hour_spend_on_app" placeholder="e.g. 3" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Order Category <span class="hint">(0=Laptop, 1=Mobile, 2=Mobile Phone, 3=Others, 4=Fashion, 5=Grocery)</span></label>
+                        <input type="number" name="prefered_order_cat" placeholder="0 to 5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred Payment Mode <span class="hint">(0=Debit, 1=UPI, 2=CC, 3=Cash, 4=E-wallet, 5=COD, 6=Credit Card)</span></label>
+                        <input type="number" name="preferred_payment_mode" placeholder="0 to 6" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Order History -->
+            <div class="card">
+                <h3>Order History</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Warehouse to Home <span class="hint">(distance in km)</span></label>
+                        <input type="number" name="warehouse_to_home" placeholder="e.g. 15" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Order Amount Hike <span class="hint">(% increase from last year)</span></label>
+                        <input type="number" name="order_amount_hike" placeholder="e.g. 20" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Coupons Used</label>
+                        <input type="number" name="coupon_used" placeholder="e.g. 2" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Order Count</label>
+                        <input type="number" name="order_count" placeholder="e.g. 5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Days Since Last Order</label>
+                        <input type="number" name="day_since_last_order" placeholder="e.g. 7" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cashback Amount</label>
+                        <input type="number" name="cashback_amount" placeholder="e.g. 180" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Satisfaction -->
+            <div class="card">
+                <h3>Customer Satisfaction</h3>
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Satisfaction Score <span class="hint">(1=lowest, 5=highest)</span></label>
+                        <input type="number" name="satisfaction_score" placeholder="1 to 5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Complain <span class="hint">(0=No, 1=Yes)</span></label>
+                        <input type="number" name="complain" placeholder="0 or 1" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Predict Churn</button>
+
+        </form>
+    </div>
+
+</body>
+</html>
