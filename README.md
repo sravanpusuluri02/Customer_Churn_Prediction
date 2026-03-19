@@ -27,7 +27,7 @@ Random Forest with 98.31% accuracy
 3. Activate it: `source venv/bin/activate`
 4. Install libraries: `pip install -r requirements.txt`
 5. Run the app: `python app.py`
-6. Open browser at `http://127.0.0.1:5000`
+6. Open browser at `http://127.0.0.1:5001`
 
 ## Dataset
 E-commerce customer dataset with 5,630 customers and 18 features.
