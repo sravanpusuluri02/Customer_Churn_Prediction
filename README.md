@@ -42,16 +42,19 @@ E-commerce businesses lose significant revenue when customers churn. This projec
 ---
 
 ## 🗂️ Project Structure
+
+```
 customer-churn-prediction/
-├── churn_prediction.ipynb
-├── app.py
-├── churn_model.pkl
-├── churn_report.html
-├── E Commerce Dataset.xlsx
+├── churn_prediction.ipynb    
+├── app.py                    
+├── churn_model.pkl           
+├── churn_report.html         
+├── E Commerce Dataset.xlsx   
 ├── templates/
-│   └── index.html
-├── requirements.txt
-└── Procfile
+│   └── index.html            
+├── requirements.txt          
+└── Procfile                  
+```
 
 ## ⚙️ Tech Stack
 
