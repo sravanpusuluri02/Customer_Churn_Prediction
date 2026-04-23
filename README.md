@@ -2,6 +2,8 @@
 
 ## Live Demo
 🌐 [Click here to try the app](https://customer-churn-prediction-anxp.onrender.com)
+## EDA Report
+📊 [Click here to view the full data analysis report](https://htmlpreview.github.io/?https://github.com/sravanpusuluri02/Customer_Churn_Prediction/blob/main/churn_report.html)
 
 ## Overview
 A machine learning web application that predicts whether an e-commerce customer is likely to churn or stay, based on their behaviour and account details.
